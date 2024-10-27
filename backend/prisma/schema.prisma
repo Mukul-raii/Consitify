@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  uid String @unique
+  username String @unique
+  email String? @unique 
+  photoUrl String @unique
+  challenges Challenges[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Challenges{
+  id Int @id @default(autoincrement())
+  challengeName String 
+  noOfDays Int
+  userId Int
+  startDate DateTime?
+  user User @relation(fields: [userId],references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  progressTable ProgressTable?
+}
+
+model ProgressTable {
+  id Int @id @default(autoincrement())
+  challengeId Int @unique
+  challenge Challenges @relation(fields: [challengeId], references: [id]) // Corrected the relation name
+  dailydata Json
+}
+
+
